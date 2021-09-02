@@ -1,0 +1,66 @@
+#include "DHT.h"
+
+
+#define DHTPIN 21      
+#define DHTTYPE DHT11   
+
+#define LEDPIN 11
+
+DHT dht(DHTPIN, DHTTYPE);
+
+  
+  #define rxPin 7 
+  #define txPin 8 
+ 
+void setup() {
+  
+  Serial.begin(9600); 
+
+ 
+  pinMode(DHTPIN, INPUT);
+  dht.begin();
+
+ 
+  Serial1.begin(9600);
+}
+
+void loop() {
+  if(Serial1.available() > 0){ 
+    digitalWrite(LEDPIN, HIGH);
+    
+    float h = dht.readHumidity();
+    float t = dht.readTemperature();
+    float f = dht.readTemperature(true);
+
+    float hif = dht.computeHeatIndex(f, h);
+    float hic = dht.computeHeatIndex(t, h, false);  
+
+    Serial.print(F(" Humidity: "));
+    Serial.print(h);
+    Serial.print(F("%  Temperature: "));
+    Serial.print(t);
+    Serial.print(F("C "));
+    Serial.print(f);
+    Serial.print(F("F  Heat index: "));
+    Serial.print(hic);
+    Serial.print(F("C "));
+    Serial.print(hif);
+    Serial.println(F("F"));
+
+    Serial1.print(F(" Humidity: "));
+    Serial1.print(h);
+    Serial1.print(F("%  Temperature: "));
+    Serial1.print(t);
+    Serial1.print(F("C "));
+    Serial1.print(f);
+    Serial1.print(F("F  Heat index: "));
+    Serial1.print(hic);
+    Serial1.print(F("C "));
+    Serial1.print(hif);
+    Serial1.println(F("F"));
+    
+    delay(1000);
+    digitalWrite(LEDPIN, LOW);
+    delay(1000);
+ }
+}
